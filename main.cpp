@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "graphics/Graphics.hpp"
+#include "graphics/IndexBufferObject.hpp"
 
 
 int main ()

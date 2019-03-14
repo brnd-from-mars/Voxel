@@ -5,6 +5,8 @@
 #ifndef VOXEL_VERTEXBUFFEROBJECT_HPP
 #define VOXEL_VERTEXBUFFEROBJECT_HPP
 
+#include <vector>
+
 #include "Graphics.hpp"
 
 
@@ -16,11 +18,19 @@ public:
 
     VertexBufferObject (bool bind, const void* data, unsigned int size);
 
+    VertexBufferObject (bool bind, const std::vector<unsigned char>& data);
+
     ~VertexBufferObject ();
 
-    void Bind();
+    void SetData (const void* data, unsigned int size);
 
-    void Unbind();
+    void SetData (const std::vector<unsigned char>& data);
+
+    void SetBoundState (bool bind);
+
+    void Bind ();
+
+    void Unbind ();
 
 
 private:
