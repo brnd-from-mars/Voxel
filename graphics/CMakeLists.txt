@@ -3,6 +3,8 @@ add_library(graphics
         Shader.cpp
         VertexBufferObject.cpp
         IndexBufferObject.cpp
+        VertexBufferLayout.cpp
+        VertexArrayObject.cpp
 )
 
 find_package(glfw3 3.2 REQUIRED)

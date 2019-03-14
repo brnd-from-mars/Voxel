@@ -32,8 +32,16 @@ bool Graphics::Active ()
 void Graphics::Update ()
 {
     GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // TODO: specialize draw call
+    GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
+}
+
+
+GLFWwindow* Graphics::GetWindow ()
+{
+    return m_Window;
 }
 
 

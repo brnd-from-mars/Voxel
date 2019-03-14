@@ -42,7 +42,7 @@ void IndexBufferObject::SetData (const unsigned int* data, unsigned int count)
     Bind();
     m_Count = count;
     auto size = m_Count * sizeof(unsigned int);
-    GLCall(glBufferData(GL_ARRAY_BUFFER, size,data, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
     SetBoundState(state);
 }
 

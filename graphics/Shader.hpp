@@ -18,12 +18,18 @@ public:
     Shader (const std::string& vertexShaderFilePath,
             const std::string& fragmentShaderFilePath);
 
+    void SetBoundState (bool bind);
 
+    void Bind ();
+
+    void Unbind ();
 
 
 private:
 
     unsigned int m_ProgramAddress;
+
+    bool m_Bound;
 
     void CreateProgram (const std::string& vertexShaderFilePath,
                         const std::string& fragmentShaderFilePath);

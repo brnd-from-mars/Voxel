@@ -14,6 +14,34 @@ Shader::Shader (const std::string& vertexShaderFilePath,
     : m_ProgramAddress(0)
 {
     CreateProgram(vertexShaderFilePath, fragmentShaderFilePath);
+    Bind();
+}
+
+
+void Shader::SetBoundState (bool bind)
+{
+    if (bind)
+    {
+        Bind();
+    }
+    else
+    {
+        Unbind();
+    }
+}
+
+
+void Shader::Bind ()
+{
+    GLCall(glUseProgram(m_ProgramAddress));
+    m_Bound = true;
+}
+
+
+void Shader::Unbind ()
+{
+    GLCall(glUseProgram(0));
+    m_Bound = false;
 }
 
 

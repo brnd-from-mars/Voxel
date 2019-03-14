@@ -28,9 +28,9 @@ public:
 
     void SetBoundState (bool bind);
 
-    void Bind();
+    void Bind ();
 
-    void Unbind();
+    void Unbind ();
 
 
 private:

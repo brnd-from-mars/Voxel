@@ -26,6 +26,8 @@ public:
 
     void Update ();
 
+    GLFWwindow* GetWindow();
+
     static void ClearError ();
 
     static void LogError (const char* function, const char* filename, int line);
