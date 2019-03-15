@@ -24,9 +24,11 @@ public:
 
     bool Active ();
 
-    void Update ();
+    void ClearWindow ();
 
-    GLFWwindow* GetWindow();
+    void Draw (unsigned int elementCount);
+
+    void UpdateWindow ();
 
     static void ClearError ();
 

@@ -14,19 +14,17 @@ class VertexBufferObject
 {
 public:
 
-    explicit VertexBufferObject (bool bind);
+    VertexBufferObject ();
 
-    VertexBufferObject (bool bind, const void* data, unsigned int size);
+    VertexBufferObject (const void* data, unsigned int size);
 
-    VertexBufferObject (bool bind, const std::vector<unsigned char>& data);
+    explicit VertexBufferObject (const std::vector<unsigned char>& data);
 
     ~VertexBufferObject ();
 
     void SetData (const void* data, unsigned int size);
 
     void SetData (const std::vector<unsigned char>& data);
-
-    void SetBoundState (bool bind);
 
     void Bind ();
 
@@ -36,8 +34,6 @@ public:
 private:
 
     unsigned int m_VBOAddress;
-
-    bool m_Bound;
 
 
 };

@@ -5,11 +5,11 @@
 #include "VertexArrayObject.hpp"
 
 
-VertexArrayObject::VertexArrayObject (bool bind)
-    : m_VAOAddress(0), m_Bound(bind)
+VertexArrayObject::VertexArrayObject ()
+    : m_VAOAddress(0)
 {
     GLCall(glGenVertexArrays(1, &m_VAOAddress));
-    SetBoundState(bind);
+    Bind();
 }
 
 
@@ -22,7 +22,6 @@ VertexArrayObject::~VertexArrayObject ()
 void VertexArrayObject::AddBuffer (VertexBufferObject& vbo,
                                    VertexBufferLayout& vbl)
 {
-    auto state = m_Bound;
     Bind();
     vbo.Bind();
     const auto& elements = vbl.GetElements();
@@ -37,34 +36,16 @@ void VertexArrayObject::AddBuffer (VertexBufferObject& vbo,
             stride, reinterpret_cast<const void*>(offset)));
         offset += VertexBufferElement::GetSize(element.type) * element.count;
     }
-    SetBoundState(state);
-}
-
-
-void VertexArrayObject::SetBoundState (bool bind)
-{
-    if (bind)
-    {
-        Bind();
-    }
-    else
-    {
-        Unbind();
-    }
 }
 
 
 void VertexArrayObject::Bind ()
 {
     GLCall(glBindVertexArray(m_VAOAddress));
-    m_Bound = true;
 }
 
 
 void VertexArrayObject::Unbind ()
 {
     GLCall(glBindVertexArray(0));
-    m_Bound = false;
 }
-
-

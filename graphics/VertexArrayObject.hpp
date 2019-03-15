@@ -14,13 +14,11 @@ class VertexArrayObject
 {
 public:
 
-    explicit VertexArrayObject (bool bind);
+    VertexArrayObject ();
 
     ~VertexArrayObject ();
 
     void AddBuffer (VertexBufferObject& vbo, VertexBufferLayout& vbl);
-
-    void SetBoundState (bool bind);
 
     void Bind ();
 
@@ -31,7 +29,6 @@ private:
 
     unsigned int m_VAOAddress;
 
-    bool m_Bound;
 
 };
 

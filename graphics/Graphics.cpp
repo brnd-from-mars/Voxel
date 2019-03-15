@@ -29,19 +29,23 @@ bool Graphics::Active ()
 }
 
 
-void Graphics::Update ()
+void Graphics::ClearWindow ()
 {
     GLCall(glClear(GL_COLOR_BUFFER_BIT));
-    // TODO: specialize draw call
-    GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-    glfwSwapBuffers(m_Window);
-    glfwPollEvents();
 }
 
 
-GLFWwindow* Graphics::GetWindow ()
+void Graphics::Draw (unsigned int elementCount)
 {
-    return m_Window;
+    GLCall(glDrawElements(GL_TRIANGLES, elementCount,
+                          GL_UNSIGNED_INT, nullptr));
+}
+
+
+void Graphics::UpdateWindow ()
+{
+    glfwSwapBuffers(m_Window);
+    glfwPollEvents();
 }
 
 

@@ -5,29 +5,25 @@
 #include "VertexBufferObject.hpp"
 
 
-VertexBufferObject::VertexBufferObject (bool bind)
-    : m_VBOAddress(0), m_Bound(bind)
+VertexBufferObject::VertexBufferObject ()
+    : m_VBOAddress(0)
 {
     GLCall(glGenBuffers(1, &m_VBOAddress));
-    SetBoundState(bind);
+    Bind();
 }
 
 
-VertexBufferObject::VertexBufferObject (bool bind, const void* data,
-                                        unsigned int size)
-    : VertexBufferObject(true)
+VertexBufferObject::VertexBufferObject (const void* data, unsigned int size)
+    : VertexBufferObject()
 {
     SetData(data, size);
-    SetBoundState(bind);
 }
 
 
-VertexBufferObject::VertexBufferObject (bool bind,
-                                        const std::vector<unsigned char>& data)
-    : VertexBufferObject(true)
+VertexBufferObject::VertexBufferObject (const std::vector<unsigned char>& data)
+    : VertexBufferObject()
 {
     SetData(data);
-    SetBoundState(bind);
 }
 
 
@@ -39,10 +35,8 @@ VertexBufferObject::~VertexBufferObject ()
 
 void VertexBufferObject::SetData (const void* data, unsigned int size)
 {
-    auto state = m_Bound;
     Bind();
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-    SetBoundState(state);
 }
 
 
@@ -53,30 +47,15 @@ void VertexBufferObject::SetData (const std::vector<unsigned char>& data)
 }
 
 
-void VertexBufferObject::SetBoundState (bool bind)
-{
-    if (bind)
-    {
-        Bind();
-    }
-    else
-    {
-        Unbind();
-    }
-}
-
-
 void VertexBufferObject::Bind ()
 {
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VBOAddress));
-    m_Bound = true;
 }
 
 
 void VertexBufferObject::Unbind ()
 {
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-    m_Bound = false;
 }
 
 

@@ -5,28 +5,26 @@
 #include "IndexBufferObject.hpp"
 
 
-IndexBufferObject::IndexBufferObject (bool bind)
-    : m_IBOAddress(0), m_Bound(bind), m_Count(0)
+IndexBufferObject::IndexBufferObject ()
+    : m_IBOAddress(0)
 {
     GLCall(glGenBuffers(1, &m_IBOAddress));
-    SetBoundState(bind);
+    Bind();
 }
 
 
-IndexBufferObject::IndexBufferObject (bool bind, const unsigned int* data,
+IndexBufferObject::IndexBufferObject (const unsigned int* data,
                                       unsigned int count)
-    : IndexBufferObject(true)
+    : IndexBufferObject()
 {
     SetData(data, count);
-    SetBoundState(bind);
 }
 
 
-IndexBufferObject::IndexBufferObject (bool bind,
-                                      const std::vector<unsigned int>& data)
+IndexBufferObject::IndexBufferObject (const std::vector<unsigned int>& data)
+    : IndexBufferObject()
 {
     SetData(data);
-    SetBoundState(bind);
 }
 
 
@@ -38,12 +36,9 @@ IndexBufferObject::~IndexBufferObject ()
 
 void IndexBufferObject::SetData (const unsigned int* data, unsigned int count)
 {
-    auto state = m_Bound;
     Bind();
-    m_Count = count;
-    auto size = m_Count * sizeof(unsigned int);
+    auto size = count * sizeof(unsigned int);
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-    SetBoundState(state);
 }
 
 
@@ -53,28 +48,13 @@ void IndexBufferObject::SetData (const std::vector<unsigned int>& data)
 }
 
 
-void IndexBufferObject::SetBoundState (bool bind)
-{
-    if (bind)
-    {
-        Bind();
-    }
-    else
-    {
-        Unbind();
-    }
-}
-
-
 void IndexBufferObject::Bind ()
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBOAddress));
-    m_Bound = true;
 }
 
 
 void IndexBufferObject::Unbind ()
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-    m_Bound = false;
 }
