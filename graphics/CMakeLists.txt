@@ -5,6 +5,7 @@ add_library(graphics
         IndexBufferObject.cpp
         VertexBufferLayout.cpp
         VertexArrayObject.cpp
+        Renderable.cpp
 )
 
 find_package(glfw3 3.2 REQUIRED)

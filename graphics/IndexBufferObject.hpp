@@ -30,10 +30,14 @@ public:
 
     void Unbind ();
 
+    unsigned int GetCount ();
+
 
 private:
 
     unsigned int m_IBOAddress;
+
+    unsigned int m_Count;
 
 
 };

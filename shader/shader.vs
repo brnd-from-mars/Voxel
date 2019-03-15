@@ -12,6 +12,6 @@ void main ()
 {
     gl_Position = mvpMatrix * position;
 
-    float cosTheta = clamp(dot(normalize(lightPosition - position), normal), 0.0, 1.0);
+    float cosTheta = clamp(dot(normalize(lightPosition - position), normal), 0.6, 1.0);
     colorV = colorIn * cosTheta;
 }

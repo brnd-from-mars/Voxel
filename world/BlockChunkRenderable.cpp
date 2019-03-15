@@ -4,20 +4,18 @@
 
 #include <algorithm>
 #include <iterator>
+#include <iostream>
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include "BlockChunkRenderable.hpp"
 
 
-union BlockVertex
+struct BlockVertex
 {
-    struct
-    {
-        glm::vec4 position;
-        glm::vec4 normal;
-        glm::vec4 color;
-    };
-
-    unsigned char bytes[3 * sizeof(glm::vec4)];
+    glm::vec4 position;
+    glm::vec4 normal;
+    glm::vec4 color;
 
     static int faceOrientation[6][4];
 
@@ -42,9 +40,9 @@ int BlockVertex::faceOrientation[6][4] = {
 glm::vec4 BlockVertex::faceNormals[6] = {
     {  0.0f,  1.0f,  0.0f, 0.0f },
     {  1.0f,  0.0f,  0.0f, 0.0f },
-    {  0.0f,  0.0f,  1.0f, 0.0f },
-    { -1.0f,  0.0f,  0.0f, 0.0f },
     {  0.0f,  0.0f, -1.0f, 0.0f },
+    { -1.0f,  0.0f,  0.0f, 0.0f },
+    {  0.0f,  0.0f,  1.0f, 0.0f },
     {  0.0f, -1.0f,  0.0f, 0.0f }
 };
 
@@ -67,8 +65,8 @@ unsigned int BlockVertex::faceIndices[2][3] = {
 };
 
 
-BlockChunkRenderable::BlockChunkRenderable ()
-    : m_NextVertex(0), m_VAO(), m_VBO(), m_IBO()
+BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics)
+    : Renderable::Renderable(graphics)
 {
     auto layout = VertexBufferLayout();
     layout.Push<float>(4);
@@ -79,70 +77,51 @@ BlockChunkRenderable::BlockChunkRenderable ()
 }
 
 
-void BlockChunkRenderable::AddFace (unsigned int block, BlockSide side,
-                                    glm::uvec3 internalPos)
+void BlockChunkRenderable::AddFace (glm::ivec3 internalPos,
+                                    BlockSide side,
+                                    unsigned int blockType)
 {
     glm::vec4 normal = BlockVertex::faceNormals[static_cast<int>(side)];
 
-    glm::vec4 blockPosition(static_cast<float>(internalPos.x),
-                            static_cast<float>(internalPos.y),
-                            static_cast<float>(internalPos.z),
-                            0.0f);
+    glm::vec4 blockPosition(0.0f);
+    std::transform(glm::value_ptr(internalPos),
+                   glm::value_ptr(internalPos) + 3,
+                   glm::value_ptr(blockPosition),
+                   [](int x)
+                   {
+                       return static_cast<float>(x);
+                   });
 
     unsigned int newVertexIndices[4];
 
     for (unsigned int i = 0; i < 4; ++i)
     {
-        glm::vec4 vertexPosition = BlockVertex::vertexOffsets[
-            BlockVertex::faceOrientation[
-                static_cast<int>(side)][i]
-            ] + blockPosition;
-        newVertexIndices[i] = AddVertex(block, vertexPosition, normal);
-
+        glm::vec4 vertexPosition =
+            BlockVertex::vertexOffsets[BlockVertex::faceOrientation[
+                static_cast<int>(side)][i]]
+            + blockPosition;
+        newVertexIndices[i] = AddVertex(vertexPosition, normal, blockType);
     }
 
-    for (unsigned int i = 0; i < 2; ++i)
+    for (auto& face : BlockVertex::faceIndices)
     {
-        for (unsigned int j = 0; j < 3; ++j)
+        for (unsigned int index : face)
         {
-            m_Indices.push_back(newVertexIndices[
-                BlockVertex::faceIndices[i][j]]);
+            m_Indices.push_back(newVertexIndices[index]);
         }
     }
 }
 
 
-unsigned int
-BlockChunkRenderable::AddVertex (unsigned int block, glm::vec4 vertexPosition,
-                                 glm::vec4 normal)
+unsigned int BlockChunkRenderable::AddVertex (glm::vec4 vertexPosition,
+                                              glm::vec4 normalVector,
+                                              unsigned int blockType)
 {
-    auto vertex = m_NextVertex;
-    ++m_NextVertex;
+    BlockVertex bv {
+        vertexPosition,
+        normalVector,
+        glm::vec4(0.8f, 0.6f, 0.8f, 1.0f)
+    };
 
-    BlockVertex bv;
-    bv.position = vertexPosition;
-    bv.normal = normal;
-    bv.color = glm::vec4(0.6f, 0.4f, 0.1f, 1.0f);
-
-    for (unsigned char byte : bv.bytes)
-    {
-        m_Vertices.push_back(byte);
-    }
-
-    return vertex;
-}
-
-
-void BlockChunkRenderable::SetData ()
-{
-    m_VBO.SetData(m_Vertices);
-    m_IBO.SetData(m_Indices);
-}
-
-
-void BlockChunkRenderable::Draw ()
-{
-    m_VAO.Bind();
-    m_VBO.Bind();
-    m_IBO.Bind();
+    return Renderable::AddVertex<BlockVertex>(bv);
 }

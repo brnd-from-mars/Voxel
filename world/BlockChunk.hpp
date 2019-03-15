@@ -19,16 +19,25 @@ class BlockChunk
 {
 public:
 
-    explicit BlockChunk (glm::ivec3 chunkPos);
+    explicit BlockChunk (glm::ivec3 chunkPos, Graphics& graphics);
 
-    BlockColumn& GetColumn (glm::uvec3 internalPos);
+    BlockColumn& GetColumn (glm::ivec3 internalPos);
 
-    unsigned int& GetBlock (glm::uvec3 internalPos);
+    unsigned int& GetBlock (glm::ivec3 internalPos);
+
+    void GenerateMesh ();
+
+    BlockChunkRenderable& GetRenderable ();
 
 
 private:
 
-    unsigned int GetColumnIndex (glm::uvec3 internalPos);
+    unsigned int GetColumnIndex (glm::ivec3 internalPos);
+
+    void GetVisibleSides (glm::ivec3 internalPos,
+                          std::vector<BlockSide>& output);
+
+    unsigned int GetNeighborOnSide (glm::ivec3 internalPos, BlockSide side);
 
     glm::ivec3 m_ChunkPos;
 

@@ -14,6 +14,7 @@ Graphics::Graphics (int major, int minor, bool core,
     InitVersion(major, minor, core);
     InitWindow(width, height, title);
     InitGlew();
+    InitOpenGL();
 }
 
 
@@ -31,7 +32,7 @@ bool Graphics::Active ()
 
 void Graphics::ClearWindow ()
 {
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 
@@ -115,4 +116,10 @@ void Graphics::InitGlew ()
         std::cerr << "[Graphics Error] glew init failed in"
                   << __FILE__ << ":" << __LINE__ << std::endl;
     }
+}
+
+
+void Graphics::InitOpenGL ()
+{
+    GLCall(glEnable(GL_DEPTH_TEST));
 }

@@ -45,6 +45,8 @@ private:
 
     void InitGlew ();
 
+    void InitOpenGL ();
+
     GLFWwindow* m_Window = nullptr;
 
 

@@ -9,13 +9,10 @@
 
 #include <glm/glm.hpp>
 
-#include "../graphics/Graphics.hpp"
-#include "../graphics/VertexBufferObject.hpp"
-#include "../graphics/IndexBufferObject.hpp"
-#include "../graphics/VertexBufferLayout.hpp"
-#include "../graphics/VertexArrayObject.hpp"
+#include "../graphics/Renderable.hpp"
 
 
+// TODO: outsource
 enum class BlockSide
 {
     Top = 0,
@@ -27,35 +24,19 @@ enum class BlockSide
 };
 
 
-class BlockChunkRenderable
+class BlockChunkRenderable : public Renderable
 {
 public:
 
-    BlockChunkRenderable ();
+    explicit BlockChunkRenderable (Graphics& graphics);
 
-    void AddFace (unsigned int block, BlockSide side, glm::uvec3 internalPos);
+    void AddFace (glm::ivec3 internalPos,
+                  BlockSide side,
+                  unsigned int blockType);
 
-    unsigned int AddVertex (unsigned int block, glm::vec4 vertexPosition,
-                            glm::vec4 normal);
-
-    void SetData ();
-
-    void Draw ();
-
-
-private:
-
-    std::vector<unsigned char> m_Vertices;
-
-    std::vector<unsigned int> m_Indices;
-
-    unsigned int m_NextVertex;
-
-    VertexArrayObject m_VAO;
-
-    VertexBufferObject m_VBO;
-
-    IndexBufferObject m_IBO;
+    unsigned int AddVertex (glm::vec4 vertexPosition,
+                            glm::vec4 normalVector,
+                            unsigned int blockType);
 
 
 };
