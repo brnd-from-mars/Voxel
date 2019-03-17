@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include <glm/glm.hpp>
+
 #include "Graphics.hpp"
 
 
@@ -22,12 +24,19 @@ public:
 
     void Unbind ();
 
-    int GetUniformLocation (const std::string& name);
+    template <typename T>
+    void SetUniformValue (const std::string& name, T data);
+
+    template <typename T>
+    void SetUniformVector (const std::string& name, const T& data);
+
+    template <typename T>
+    void SetUniformMatrix (const std::string& name, const T& data);
 
 
 private:
 
-    unsigned int m_ProgramAddress;
+    int GetUniformLocation (const std::string& name);
 
     void CreateProgram (const std::string& vertexShaderFilePath,
                         const std::string& fragmentShaderFilePath);
@@ -37,8 +46,24 @@ private:
 
     std::string LoadFile (const std::string& filePath);
 
+    unsigned int m_ProgramAddress;
+
 
 };
+
+
+template <>
+void Shader::SetUniformValue<int> (const std::string& name, int data);
+
+
+template <>
+void Shader::SetUniformVector<glm::vec4> (const std::string& name,
+                                          const glm::vec4& data);
+
+
+template <>
+void Shader::SetUniformMatrix<glm::mat4> (const std::string& name,
+                                          const glm::mat4& data);
 
 
 #endif //VOXEL_SHADER_HPP

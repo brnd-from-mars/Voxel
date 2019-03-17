@@ -5,9 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(Voxel main.cpp)
 
+include_directories(vendor)
+
+add_subdirectory(utility)
 add_subdirectory(graphics)
 add_subdirectory(world)
-target_link_libraries(Voxel graphics world)
+add_subdirectory(vendor)
+target_link_libraries(Voxel utility graphics world)
 
 add_custom_command(
         TARGET Voxel
@@ -15,9 +19,9 @@ add_custom_command(
         WORKING_DIRECTORY
             ${CMAKE_CURRENT_SOURCE_DIR}
         COMMAND
-            ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/shader
+            ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/resources
         COMMAND
             ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/shader
-                ${CMAKE_BINARY_DIR}/shader
+                ${CMAKE_CURRENT_SOURCE_DIR}/resources
+                ${CMAKE_BINARY_DIR}/resources
 )

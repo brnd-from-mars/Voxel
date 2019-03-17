@@ -5,11 +5,9 @@
 #ifndef VOXEL_BLOCKCOLUMN_HPP
 #define VOXEL_BLOCKCOLUMN_HPP
 
-#define MAX_HEIGHT 128
-#define BLOCK_AIR 0
-#define BLOCK_STONE 1
-
 #include <vector>
+
+#include "BlockUtility.hpp"
 
 
 class BlockColumn

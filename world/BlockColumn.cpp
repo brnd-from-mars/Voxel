@@ -10,8 +10,8 @@
 BlockColumn::BlockColumn (unsigned int height)
     : m_Height(height)
 {
-    m_Blocks.resize(MAX_HEIGHT, BLOCK_AIR);
-    std::fill(m_Blocks.begin(), m_Blocks.begin() + height, BLOCK_STONE);
+    m_Blocks.resize(CHUNK_HEIGHT, 0);
+    std::fill(m_Blocks.begin(), m_Blocks.begin() + height, 1);
 }
 
 

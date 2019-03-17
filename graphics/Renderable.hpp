@@ -5,7 +5,7 @@
 #ifndef VOXEL_RENDERABLE_HPP
 #define VOXEL_RENDERABLE_HPP
 
-#include <iostream>
+#include <glm/glm.hpp>
 
 #include "Graphics.hpp"
 #include "IndexBufferObject.hpp"
@@ -32,7 +32,13 @@ class Renderable
 {
 public:
 
-    explicit Renderable (Graphics& graphics);
+    Renderable (Graphics& graphics,
+                Shader &shader,
+                const glm::mat4 &matrixModel);
+
+    explicit Renderable (Graphics& graphics, Shader &shader);
+
+    void SetMatrixModel (const glm::mat4 &matrixModel);
 
     void UpdateData ();
 
@@ -58,6 +64,10 @@ public:
 protected:
 
     Graphics& m_Graphics;
+
+    Shader& m_Shader;
+
+    glm::mat4 m_MatrixModel;
 
     VertexArrayObject m_VAO;
 

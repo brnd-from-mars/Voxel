@@ -2,11 +2,8 @@
 // Created by Brendan Berg on 14.03.19.
 //
 
-#include <algorithm>
-#include <iterator>
-#include <iostream>
-
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "BlockChunkRenderable.hpp"
 
@@ -15,13 +12,15 @@ struct BlockVertex
 {
     glm::vec4 position;
     glm::vec4 normal;
-    glm::vec4 color;
+    glm::vec2 textureCoordinates;
 
     static int faceOrientation[6][4];
 
     static glm::vec4 faceNormals[6];
 
     static glm::vec4 vertexOffsets[8];
+
+    static glm::vec2 textureIndices[4];
 
     static unsigned int faceIndices[2][3];
 };
@@ -48,14 +47,22 @@ glm::vec4 BlockVertex::faceNormals[6] = {
 
 
 glm::vec4 BlockVertex::vertexOffsets[8] = {
-    { 0.0f, 0.0f, 0.0f, 1.0f },
-    { 1.0f, 0.0f, 0.0f, 1.0f },
-    { 1.0f, 0.0f, 1.0f, 1.0f },
-    { 0.0f, 0.0f, 1.0f, 1.0f },
-    { 0.0f, 1.0f, 0.0f, 1.0f },
-    { 1.0f, 1.0f, 0.0f, 1.0f },
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 0.0f, 1.0f, 1.0f, 1.0f }
+    { 0.0f, 0.0f, 0.0f, 0.0f },
+    { 1.0f, 0.0f, 0.0f, 0.0f },
+    { 1.0f, 0.0f, 1.0f, 0.0f },
+    { 0.0f, 0.0f, 1.0f, 0.0f },
+    { 0.0f, 1.0f, 0.0f, 0.0f },
+    { 1.0f, 1.0f, 0.0f, 0.0f },
+    { 1.0f, 1.0f, 1.0f, 0.0f },
+    { 0.0f, 1.0f, 1.0f, 0.0f }
+};
+
+
+glm::vec2 BlockVertex::textureIndices[4] = {
+    { 0.0000f, 0.0000f },
+    { 0.0625f, 0.0000f },
+    { 0.0625f, 0.0625f },
+    { 0.0000f, 0.0625f }
 };
 
 
@@ -65,32 +72,38 @@ unsigned int BlockVertex::faceIndices[2][3] = {
 };
 
 
-BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics)
-    : Renderable::Renderable(graphics)
+BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics,
+                                            Shader& shader,
+                                            const glm::vec3& chunkPos)
+    : Renderable::Renderable(graphics, shader)
 {
     auto layout = VertexBufferLayout();
     layout.Push<float>(4);
     layout.Push<float>(4);
-    layout.Push<float>(4);
+    layout.Push<float>(2);
 
     m_VAO.AddBuffer(m_VBO, layout);
+
+    SetChunkPos(chunkPos);
 }
 
 
-void BlockChunkRenderable::AddFace (glm::ivec3 internalPos,
+BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics, Shader& shader)
+    : BlockChunkRenderable(graphics, shader, glm::vec3(0.0, 0.0, 0.0))
+{ }
+
+
+void BlockChunkRenderable::SetChunkPos (const glm::vec3& chunkPos)
+{
+    SetMatrixModel(glm::translate(glm::mat4(1.0f), chunkPos * 16.0f));
+}
+
+
+void BlockChunkRenderable::AddFace (const glm::vec4& blockPosition,
                                     BlockSide side,
                                     unsigned int blockType)
 {
     glm::vec4 normal = BlockVertex::faceNormals[static_cast<int>(side)];
-
-    glm::vec4 blockPosition(0.0f);
-    std::transform(glm::value_ptr(internalPos),
-                   glm::value_ptr(internalPos) + 3,
-                   glm::value_ptr(blockPosition),
-                   [](int x)
-                   {
-                       return static_cast<float>(x);
-                   });
 
     unsigned int newVertexIndices[4];
 
@@ -100,7 +113,7 @@ void BlockChunkRenderable::AddFace (glm::ivec3 internalPos,
             BlockVertex::vertexOffsets[BlockVertex::faceOrientation[
                 static_cast<int>(side)][i]]
             + blockPosition;
-        newVertexIndices[i] = AddVertex(vertexPosition, normal, blockType);
+        newVertexIndices[i] = AddVertex(vertexPosition, normal, i);
     }
 
     for (auto& face : BlockVertex::faceIndices)
@@ -115,12 +128,12 @@ void BlockChunkRenderable::AddFace (glm::ivec3 internalPos,
 
 unsigned int BlockChunkRenderable::AddVertex (glm::vec4 vertexPosition,
                                               glm::vec4 normalVector,
-                                              unsigned int blockType)
+                                              unsigned int vertex)
 {
     BlockVertex bv {
         vertexPosition,
         normalVector,
-        glm::vec4(0.8f, 0.6f, 0.8f, 1.0f)
+        BlockVertex::textureIndices[vertex]
     };
 
     return Renderable::AddVertex<BlockVertex>(bv);

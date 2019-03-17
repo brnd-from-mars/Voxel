@@ -53,13 +53,13 @@ private:
 
 
 template <>
-void VertexBufferLayout::Push <float> (unsigned int count);
+void VertexBufferLayout::Push<float> (unsigned int count);
 
 template <>
-void VertexBufferLayout::Push <unsigned int> (unsigned int count);
+void VertexBufferLayout::Push<unsigned int> (unsigned int count);
 
 template <>
-void VertexBufferLayout::Push <unsigned char> (unsigned int count);
+void VertexBufferLayout::Push<unsigned char> (unsigned int count);
 
 
 #endif //VOXEL_VERTEXBUFFERLAYOUT_HPP

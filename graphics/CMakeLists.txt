@@ -5,6 +5,7 @@ add_library(graphics
         IndexBufferObject.cpp
         VertexBufferLayout.cpp
         VertexArrayObject.cpp
+        Texture.cpp
         Renderable.cpp
 )
 
@@ -22,4 +23,5 @@ target_link_libraries(graphics
         glfw
         ${OPENGL_LIBRARIES}
         ${GLEW_LIBRARIES}
+        stb
 )

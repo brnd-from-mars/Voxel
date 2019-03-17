@@ -9,41 +9,30 @@
 
 #include <glm/glm.hpp>
 
-#include "BlockColumn.hpp"
+#include "BlockChunkBlocks.hpp"
 #include "BlockChunkRenderable.hpp"
-
-#define CHUNK_SIZE 16
 
 
 class BlockChunk
 {
 public:
 
-    explicit BlockChunk (glm::ivec3 chunkPos, Graphics& graphics);
+    BlockChunk (const glm::ivec3& chunkPos,
+                std::unique_ptr<BlockChunkBlocks>&& blocks,
+                std::unique_ptr<BlockChunkRenderable>&& renderable);
 
-    BlockColumn& GetColumn (glm::ivec3 internalPos);
-
-    unsigned int& GetBlock (glm::ivec3 internalPos);
-
-    void GenerateMesh ();
-
-    BlockChunkRenderable& GetRenderable ();
+    std::unique_ptr<BlockChunkRenderable>& GetRenderable ();
 
 
 private:
 
-    unsigned int GetColumnIndex (glm::ivec3 internalPos);
-
-    void GetVisibleSides (glm::ivec3 internalPos,
-                          std::vector<BlockSide>& output);
-
-    unsigned int GetNeighborOnSide (glm::ivec3 internalPos, BlockSide side);
+    void GenerateMesh ();
 
     glm::ivec3 m_ChunkPos;
 
-    std::vector<BlockColumn> m_Blocks;
+    std::unique_ptr<BlockChunkBlocks> m_Blocks;
 
-    BlockChunkRenderable m_BlockChunckRenderable;
+    std::unique_ptr<BlockChunkRenderable> m_Renderable;
 
 
 };

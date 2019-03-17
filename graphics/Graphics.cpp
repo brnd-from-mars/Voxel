@@ -82,6 +82,7 @@ void Graphics::InitVersion (int major, int minor, bool core)
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
+    glfwWindowHint(GLFW_SAMPLES, 4);
     if (core)
     {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -122,4 +123,5 @@ void Graphics::InitGlew ()
 void Graphics::InitOpenGL ()
 {
     GLCall(glEnable(GL_DEPTH_TEST));
+    GLCall(glEnable(GL_MULTISAMPLE));
 }

@@ -11,32 +11,32 @@
 
 #include "../graphics/Renderable.hpp"
 
-
-// TODO: outsource
-enum class BlockSide
-{
-    Top = 0,
-    North = 1,
-    East = 2,
-    South = 3,
-    West = 4,
-    Bottom = 5
-};
+#include "BlockUtility.hpp"
 
 
 class BlockChunkRenderable : public Renderable
 {
 public:
 
-    explicit BlockChunkRenderable (Graphics& graphics);
+    BlockChunkRenderable (Graphics& graphics,
+                          Shader& shader,
+                          const glm::vec3& chunkPos);
 
-    void AddFace (glm::ivec3 internalPos,
+    BlockChunkRenderable (Graphics& graphics,
+                          Shader& shader);
+
+    void SetChunkPos (const glm::vec3& chunkPos);
+
+    void AddFace (const glm::vec4& blockPosition,
                   BlockSide side,
                   unsigned int blockType);
 
+
+private:
+
     unsigned int AddVertex (glm::vec4 vertexPosition,
                             glm::vec4 normalVector,
-                            unsigned int blockType);
+                            unsigned int vertex);
 
 
 };

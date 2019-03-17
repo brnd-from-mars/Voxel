@@ -6,6 +6,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Shader.hpp"
 
 
@@ -30,9 +32,29 @@ void Shader::Unbind ()
 }
 
 
-int Shader::GetUniformLocation (const std::string& name)
+template<>
+void Shader::SetUniformValue (const std::string& name, int data)
 {
-    return glGetUniformLocation(m_ProgramAddress, name.c_str());
+    auto address = GetUniformLocation(name);
+    GLCall(glUniform1i(address, data));
+}
+
+
+template<>
+void Shader::SetUniformVector<glm::vec4> (const std::string& name,
+                                          const glm::vec4& data)
+{
+    auto address = GetUniformLocation(name);
+    GLCall(glUniform4fv(address, 1, glm::value_ptr(data)));
+}
+
+
+template<>
+void Shader::SetUniformMatrix<glm::mat4> (const std::string& name,
+                                          const glm::mat4& data)
+{
+    auto address = GetUniformLocation(name);
+    GLCall(glUniformMatrix4fv(address, 1, GL_FALSE, glm::value_ptr(data)));
 }
 
 
@@ -91,4 +113,10 @@ std::string Shader::LoadFile (const std::string& filePath)
     file.close();
 
     return stream.str();
+}
+
+
+int Shader::GetUniformLocation (const std::string& name)
+{
+    return glGetUniformLocation(m_ProgramAddress, name.c_str());
 }

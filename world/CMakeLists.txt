@@ -1,7 +1,11 @@
 add_library(world
+        BlockUtility.cpp
         BlockColumn.cpp
-        BlockChunk.cpp
+        BlockChunkBlocks.cpp
         BlockChunkRenderable.cpp
+        BlockChunk.cpp
+        BlockType.cpp
+        BlockTypeContainer.cpp
 )
 
-target_link_libraries(world graphics)
+target_link_libraries(world utility graphics)
