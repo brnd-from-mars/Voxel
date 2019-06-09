@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 #define GLCall(x) Graphics::ClearError();\
     x;\
     Graphics::LogError(#x, __FILE__, __LINE__)
@@ -30,6 +32,18 @@ public:
 
     void UpdateWindow ();
 
+    void SetWindowUserPointer (void* pointer);
+
+    void SwitchGUIMode ();
+
+    GLFWwindow* GetWindow ();
+
+    bool GetGUIMode ();
+
+    glm::mat4 GetProjectionMatrix ();
+
+    double GetFrameDuration ();
+
     static void ClearError ();
 
     static void LogError (const char* function, const char* filename, int line);
@@ -47,7 +61,19 @@ private:
 
     void InitOpenGL ();
 
+    void InitProjection (int width, int height);
+
     GLFWwindow* m_Window = nullptr;
+
+    glm::mat4 m_ProjectionMatrix;
+
+    double m_PreviousFrameTime;
+
+    double m_CurrentFrameTime;
+
+    double m_FrameDuration;
+
+    bool m_GUIMode;
 
 
 };

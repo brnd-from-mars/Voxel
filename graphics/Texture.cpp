@@ -6,7 +6,8 @@
 
 
 Texture::Texture (const std::string& filePath)
-    : m_TextureAddress(0), m_Width(0), m_Height(0), m_BitsPerPixel()
+    : m_TextureAddress(0), m_TextureSlot(0),
+    m_Width(0), m_Height(0), m_BitsPerPixel()
 {
     //stbi_set_flip_vertically_on_load(1);
     auto buffer = stbi_load(filePath.c_str(),
@@ -35,10 +36,17 @@ Texture::~Texture ()
 }
 
 
-void Texture::Bind (unsigned int slot)
+int Texture::GetSlot ()
+{
+    return m_TextureSlot;
+}
+
+
+void Texture::Bind (int slot)
 {
     GLCall(glActiveTexture(GL_TEXTURE0 + slot));
     GLCall(glBindTexture(GL_TEXTURE_2D, m_TextureAddress));
+    m_TextureSlot = slot;
 }
 
 

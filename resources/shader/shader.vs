@@ -17,7 +17,9 @@ void main ()
 {
     gl_Position = u_MatrixProjection * u_MatrixView * u_MatrixModel * a_position;
 
-    vec4 lightDirection = normalize(u_lightPosition - a_position);
-    v_brightness = clamp(dot(lightDirection, a_normal), 0.2, 1.0);
+    vec4 worldPosition = u_MatrixModel * a_position;
+
+    vec4 lightDirection = normalize(u_lightPosition - worldPosition);
+    v_brightness = clamp(dot(lightDirection, a_normal), 0.2, 0.7);
     v_textureCoordinate = a_textureCoordinate;
 }

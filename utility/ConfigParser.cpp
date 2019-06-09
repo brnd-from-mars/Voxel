@@ -70,6 +70,30 @@ unsigned int ConfigParser::UnserializeUnsigned (const std::string& string)
 }
 
 
+std::pair<unsigned int, unsigned int>
+ConfigParser::UnserializePair (const std::string& string)
+{
+    auto commaCharPos = string.find(',');
+    auto first = string.substr(0, commaCharPos);
+    auto second = string.substr(commaCharPos + 1);
+    return std::make_pair(UnserializeUnsigned(first),
+                          UnserializeUnsigned(second));
+}
+
+
+CommandParameters::const_iterator
+ConfigParser::FindParameter (const CommandParameters& parameters,
+                             const std::string& string)
+{
+
+    return std::find_if(parameters.begin(), parameters.end(),
+                        [string](const CommandParameter& parameter)
+                        {
+                            return parameter.first == string;
+                        });
+}
+
+
 void ConfigParser::ParseParameters (const std::string& parameterString,
                                     CommandParameters& parameters)
 {

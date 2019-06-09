@@ -6,6 +6,10 @@ add_library(world
         BlockChunk.cpp
         BlockType.cpp
         BlockTypeContainer.cpp
+        World.cpp
+        WorldGenerator.cpp
+        WorldLoader.cpp
+        ChunkLoader.cpp
 )
 
 target_link_libraries(world utility graphics)

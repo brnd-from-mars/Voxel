@@ -72,10 +72,13 @@ unsigned int BlockVertex::faceIndices[2][3] = {
 };
 
 
-BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics,
+BlockChunkRenderable::BlockChunkRenderable (std::shared_ptr<Graphics>& graphics,
                                             Shader& shader,
+                                            const BlockTypeContainer&
+                                                blockTypeContainer,
                                             const glm::vec3& chunkPos)
-    : Renderable::Renderable(graphics, shader)
+    : Renderable::Renderable(graphics, shader),
+    m_BlockTypeContainer(blockTypeContainer)
 {
     auto layout = VertexBufferLayout();
     layout.Push<float>(4);
@@ -88,14 +91,45 @@ BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics,
 }
 
 
-BlockChunkRenderable::BlockChunkRenderable (Graphics& graphics, Shader& shader)
-    : BlockChunkRenderable(graphics, shader, glm::vec3(0.0, 0.0, 0.0))
+BlockChunkRenderable::BlockChunkRenderable (std::shared_ptr<Graphics>& graphics,
+                                            Shader& shader,
+                                            const BlockTypeContainer&
+                                                blockTypeContainer)
+    : BlockChunkRenderable(graphics, shader, blockTypeContainer, glm::vec3(0.0))
 { }
 
 
 void BlockChunkRenderable::SetChunkPos (const glm::vec3& chunkPos)
 {
     SetMatrixModel(glm::translate(glm::mat4(1.0f), chunkPos * 16.0f));
+}
+
+
+void
+BlockChunkRenderable::GenerateMesh (std::unique_ptr<BlockChunkBlocks>& blocks)
+{
+    for (unsigned int y = 0; y < CHUNK_HEIGHT; ++y)
+    {
+        for (unsigned int z = 0; z < CHUNK_SIZE; ++z)
+        {
+            for (unsigned int x = 0; x < CHUNK_SIZE; ++x)
+            {
+                auto internalPos = glm::ivec3(x, y, z);
+                auto block = blocks->GetBlock(internalPos);
+                if (m_BlockTypeContainer.GetBlock(block).IsOpaque())
+                {
+                    std::vector<BlockSide> neighbors;
+                    blocks->GetVisibleSides(internalPos, neighbors);
+                    for (auto& side : neighbors)
+                    {
+                        AddFace(glm::vec4(internalPos, 1.0f), side, block);
+                    }
+                }
+            }
+        }
+    }
+
+    UpdateData();
 }
 
 
@@ -113,7 +147,8 @@ void BlockChunkRenderable::AddFace (const glm::vec4& blockPosition,
             BlockVertex::vertexOffsets[BlockVertex::faceOrientation[
                 static_cast<int>(side)][i]]
             + blockPosition;
-        newVertexIndices[i] = AddVertex(vertexPosition, normal, i);
+        newVertexIndices[i] = AddVertex(
+            vertexPosition,normal, side, blockType, i);
     }
 
     for (auto& face : BlockVertex::faceIndices)
@@ -128,12 +163,15 @@ void BlockChunkRenderable::AddFace (const glm::vec4& blockPosition,
 
 unsigned int BlockChunkRenderable::AddVertex (glm::vec4 vertexPosition,
                                               glm::vec4 normalVector,
+                                              BlockSide side,
+                                              unsigned int blockType,
                                               unsigned int vertex)
 {
     BlockVertex bv {
         vertexPosition,
         normalVector,
-        BlockVertex::textureIndices[vertex]
+        m_BlockTypeContainer.GetBlock(blockType).GetTextureCoordinate(side,
+                                                                      vertex)
     };
 
     return Renderable::AddVertex<BlockVertex>(bv);

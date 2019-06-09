@@ -20,7 +20,9 @@ public:
 
     ~Texture ();
 
-    void Bind (unsigned int slot = 0);
+    int GetSlot ();
+
+    void Bind (int slot = 0);
 
     void Unbind ();
 
@@ -28,6 +30,8 @@ public:
 private:
 
     unsigned int m_TextureAddress;
+
+    int m_TextureSlot;
 
     int m_Width;
 

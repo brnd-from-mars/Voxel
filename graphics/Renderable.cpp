@@ -5,7 +5,7 @@
 #include "Renderable.hpp"
 
 
-Renderable::Renderable (Graphics& graphics,
+Renderable::Renderable (std::shared_ptr<Graphics>& graphics,
                         Shader &shader,
                         const glm::mat4& matrixModel)
     : m_Graphics(graphics), m_Shader(shader), m_MatrixModel(matrixModel),
@@ -13,7 +13,7 @@ Renderable::Renderable (Graphics& graphics,
 { }
 
 
-Renderable::Renderable (Graphics& graphics, Shader& shader)
+Renderable::Renderable (std::shared_ptr<Graphics>& graphics, Shader& shader)
     : Renderable(graphics, shader, glm::mat4(0.0f))
 { }
 
@@ -40,5 +40,5 @@ void Renderable::Draw ()
 
     m_Shader.SetUniformMatrix("u_MatrixModel", m_MatrixModel);
 
-    m_Graphics.Draw(m_IBO.GetCount());
+    m_Graphics->Draw(m_IBO.GetCount());
 }

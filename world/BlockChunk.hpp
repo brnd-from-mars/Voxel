@@ -23,10 +23,10 @@ public:
 
     std::unique_ptr<BlockChunkRenderable>& GetRenderable ();
 
+    glm::ivec3 GetPosition () const;
+
 
 private:
-
-    void GenerateMesh ();
 
     glm::ivec3 m_ChunkPos;
 

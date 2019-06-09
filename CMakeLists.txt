@@ -10,8 +10,10 @@ include_directories(vendor)
 add_subdirectory(utility)
 add_subdirectory(graphics)
 add_subdirectory(world)
+add_subdirectory(event)
+add_subdirectory(player)
 add_subdirectory(vendor)
-target_link_libraries(Voxel utility graphics world)
+target_link_libraries(Voxel utility graphics world event player)
 
 add_custom_command(
         TARGET Voxel

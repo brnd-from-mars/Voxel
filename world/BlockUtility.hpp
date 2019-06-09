@@ -9,6 +9,7 @@
 
 #define CHUNK_HEIGHT 128
 #define CHUNK_SIZE 16
+#define CHUNK_LOAD_DISTANCE 80.0f
 
 
 enum class BlockSide
@@ -29,6 +30,14 @@ public:
     static glm::ivec3 GetNeighbor (glm::ivec3 internalPos, BlockSide side);
 
     static bool InsideChunk (glm::ivec3 internalPos);
+
+    static glm::vec3 GetChunkCenter (glm::ivec3 chunkPos);
+
+    static glm::vec3 GetChunkCenter (int x, int z);
+
+    static glm::ivec3 PlayerPositionToChunk (glm::vec3 playerPosition);
+
+    static bool Equal (glm::ivec3 a, glm::ivec3 b);
 
 
 };

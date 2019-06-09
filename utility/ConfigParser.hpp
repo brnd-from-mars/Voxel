@@ -9,7 +9,9 @@
 #include <map>
 #include <fstream>
 
+
 typedef std::pair<std::string, std::string> CommandParameter;
+
 typedef std::vector<CommandParameter> CommandParameters;
 
 
@@ -26,6 +28,13 @@ public:
     static bool IsNumeric (const std::string& string);
 
     static unsigned int UnserializeUnsigned (const std::string& string);
+
+    static std::pair<unsigned int, unsigned int>
+        UnserializePair (const std::string& string);
+
+    static CommandParameters::const_iterator
+        FindParameter (const CommandParameters& parameters,
+                       const std::string& string);
 
 
 private:

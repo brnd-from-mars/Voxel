@@ -4,17 +4,22 @@
 
 #include <iostream>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "Graphics.hpp"
 
 
 Graphics::Graphics (int major, int minor, bool core,
                     int width, int height, const char* title)
+    : m_PreviousFrameTime(0), m_CurrentFrameTime(0), m_FrameDuration(0),
+    m_GUIMode(true)
 {
     InitGlfw();
     InitVersion(major, minor, core);
     InitWindow(width, height, title);
     InitGlew();
     InitOpenGL();
+    InitProjection(width, height);
 }
 
 
@@ -26,6 +31,9 @@ Graphics::~Graphics ()
 
 bool Graphics::Active ()
 {
+    m_PreviousFrameTime = m_CurrentFrameTime;
+    m_CurrentFrameTime = glfwGetTime();
+    m_FrameDuration = m_CurrentFrameTime - m_PreviousFrameTime;
     return !glfwWindowShouldClose(m_Window);
 }
 
@@ -47,6 +55,45 @@ void Graphics::UpdateWindow ()
 {
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
+}
+
+
+void Graphics::SetWindowUserPointer (void* pointer)
+{
+    glfwSetWindowUserPointer(m_Window, pointer);
+}
+
+
+void Graphics::SwitchGUIMode ()
+{
+    m_GUIMode = !m_GUIMode;
+    glfwSetInputMode(m_Window,
+                     GLFW_CURSOR,
+                     m_GUIMode ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+}
+
+
+GLFWwindow* Graphics::GetWindow ()
+{
+    return m_Window;
+}
+
+
+bool Graphics::GetGUIMode ()
+{
+    return m_GUIMode;
+}
+
+
+glm::mat4 Graphics::GetProjectionMatrix ()
+{
+    return m_ProjectionMatrix;
+}
+
+
+double Graphics::GetFrameDuration ()
+{
+    return m_FrameDuration;
 }
 
 
@@ -75,6 +122,8 @@ void Graphics::InitGlfw ()
         std::cerr << "[Graphics Error] glfw init failed in"
                   << __FILE__ << ":" << __LINE__ << std::endl;
     }
+
+    m_CurrentFrameTime = glfwGetTime();
 }
 
 
@@ -124,4 +173,15 @@ void Graphics::InitOpenGL ()
 {
     GLCall(glEnable(GL_DEPTH_TEST));
     GLCall(glEnable(GL_MULTISAMPLE));
+    GLCall(glEnable(GL_CULL_FACE));
+    GLCall(glCullFace(GL_FRONT));
+}
+
+
+void Graphics::InitProjection (int width, int height)
+{
+    m_ProjectionMatrix = glm::perspective(
+        glm::radians(45.0f),
+        static_cast<float>(width) / static_cast<float>(height),
+        0.1f, 180.0f);
 }

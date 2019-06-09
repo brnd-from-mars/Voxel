@@ -6,19 +6,25 @@
 #define VOXEL_BLOCKCHUNKBLOCKS_HPP
 
 #include <vector>
+#include <memory>
 
 #include <glm/glm.hpp>
 
 #include "BlockColumn.hpp"
+#include "BlockTypeContainer.hpp"
+#include "WorldGenerator.hpp"
+#include "ChunkLoader.hpp"
 
 
 class BlockChunkBlocks
 {
 public:
 
-    explicit BlockChunkBlocks ();
+    BlockChunkBlocks (std::unique_ptr<ChunkLoader>& chunkLoader,
+                      const BlockTypeContainer& blockTypeContainer,
+                      glm::ivec3 chunkPos, bool generate);
 
-    unsigned int& GetBlock (const glm::ivec3& internalPos);
+    char& GetBlock (const glm::ivec3& internalPos);
 
     void GetVisibleSides (const glm::ivec3& internalPos,
                           std::vector<BlockSide>& output);
@@ -30,10 +36,15 @@ private:
 
     BlockColumn& GetColumn (const glm::ivec3& internalPos);
 
-    unsigned int GetNeighborOnSide (const glm::ivec3& internalPos,
-                                    BlockSide side);
+    char GetNeighborOnSide (const glm::ivec3& internalPos, BlockSide side);
 
     std::vector<BlockColumn> m_Blocks;
+
+    std::unique_ptr<ChunkLoader> m_ChunkLoader;
+
+    const BlockTypeContainer& m_BlockTypeContainer;
+
+    glm::ivec3 m_ChunkPos;
 
 
 };
