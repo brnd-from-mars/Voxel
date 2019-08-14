@@ -49,6 +49,7 @@ private:
 
     unsigned int m_Stride;
 
+
 };
 
 

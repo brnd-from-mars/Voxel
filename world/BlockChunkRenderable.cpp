@@ -58,14 +58,6 @@ glm::vec4 BlockVertex::vertexOffsets[8] = {
 };
 
 
-glm::vec2 BlockVertex::textureIndices[4] = {
-    { 0.0000f, 0.0000f },
-    { 0.0625f, 0.0000f },
-    { 0.0625f, 0.0625f },
-    { 0.0000f, 0.0625f }
-};
-
-
 unsigned int BlockVertex::faceIndices[2][3] = {
     { 0, 1, 2 },
     { 0, 2, 3 }
@@ -148,7 +140,7 @@ void BlockChunkRenderable::AddFace (const glm::vec4& blockPosition,
                 static_cast<int>(side)][i]]
             + blockPosition;
         newVertexIndices[i] = AddVertex(
-            vertexPosition,normal, side, blockType, i);
+            vertexPosition, normal, side, blockType, i);
     }
 
     for (auto& face : BlockVertex::faceIndices)

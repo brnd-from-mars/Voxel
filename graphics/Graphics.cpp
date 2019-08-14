@@ -12,7 +12,7 @@
 Graphics::Graphics (int major, int minor, bool core,
                     int width, int height, const char* title)
     : m_PreviousFrameTime(0), m_CurrentFrameTime(0), m_FrameDuration(0),
-    m_GUIMode(true)
+    m_GUIMode(true), m_ProjectionMatrix(1.0f)
 {
     InitGlfw();
     InitVersion(major, minor, core);

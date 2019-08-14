@@ -18,7 +18,7 @@ BlockColumn::BlockColumn (unsigned int height)
 {
     m_Blocks.resize(CHUNK_HEIGHT, 0);
     height = std::min(height, static_cast<unsigned int>(CHUNK_HEIGHT - 1));
-    std::fill(m_Blocks.begin(), m_Blocks.begin() + height, 1);
+    std::fill(m_Blocks.begin(), m_Blocks.begin() + height, 9);
 }
 
 

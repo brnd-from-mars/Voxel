@@ -28,7 +28,6 @@ void World::GenerateChunk (int x, int z)
 }
 
 
-// TODO: use center coordinates
 void World::Update (glm::vec3 playerPosition)
 {
     auto playerPosFlat = playerPosition;
@@ -53,7 +52,7 @@ void World::Update (glm::vec3 playerPosition)
 
     for (int x = -4; x < 5; ++x)
     {
-        for (int z = -4; z < 4; ++z)
+        for (int z = -4; z < 5; ++z)
         {
             auto chunkI = glm::ivec3(x, 0, z) + currentChunk;
             auto chunkPos = BlockUtility::GetChunkCenter(chunkI);

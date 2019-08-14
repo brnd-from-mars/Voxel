@@ -50,14 +50,14 @@ BlockType::GetTextureCoordinate (BlockSide side, unsigned int vertex) const
     switch (vertex)
     {
         case 0:
-            return texture.first;
-        case 1:
-            return glm::vec2(texture.second.x, texture.first.y);
-        case 2:
             return texture.second;
+        case 1:
+            return glm::vec2(texture.first.x, texture.second.y);
+        case 2:
+            return texture.first;
         case 3:
         default:
-            return glm::vec2(texture.first.x, texture.second.y);
+            return glm::vec2(texture.second.x, texture.first.y);
     }
 }
 
